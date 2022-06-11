@@ -1,0 +1,118 @@
+import datetime
+import time
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+
+def login():
+    # 打开京东登录页，并进行扫码登录
+    browser.get("https://www.jd.com")
+    time.sleep(1)
+    if browser.find_element(by=By.LINK_TEXT, value="你好，请登录"):
+        browser.find_element(by=By.LINK_TEXT, value="你好，请登录").click()
+        now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
+        print("======请登录 时间：%s" % now)
+        time.sleep(2)
+    # 检查是否登录成功
+    while True:
+        try:
+            if browser.find_element(by=By.LINK_TEXT, value="登录页面，调查问卷"):
+                now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
+                print("======请登录 时间：%s" % now)
+                time.sleep(1)
+        except:
+            now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
+            print("======登录成功 时间：%s" % now)
+            time.sleep(1)
+            # 打开购物车界面
+            browser.get("https://cart.jd.com")
+            time.sleep(2)
+            break
+
+def picking(method):
+    # 全选购物车
+    if method == 1:
+        while True:
+            try:
+                if browser.find_element(by=By.NAME, value="select-all"):
+                    browser.find_element(by=By.NAME, value="select-all").click()
+                    now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
+                    print("======全选成功 时间：%s" % now)
+                    while True:
+                        # 确认是否抢购
+                            sum = browser.find_element(by=By.CLASS_NAME, value="amount-sum")
+                            print(sum.text, "确定请输入“1”，继续勾选请输入“0” 时间：%s" % now)
+                            a = input()
+                            if a == 1:
+                                break
+                            else:
+                                print("请勾选商品，按回车键接续 时间：%s" % now)
+                                input()
+                    break
+            except:
+                now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
+                print("======找不到购买按钮 时间：%s" % now)
+
+    # 手动选择商品
+    if method == 0:
+        now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
+        print("请勾选商品，按回车键继续 时间：%s" % now)
+        input()
+        # 检查是否已经勾选
+        while True:
+                sum = browser.find_element(by=By.CLASS_NAME, value="amount-sum")
+                if sum.text == "已选择0件商品":
+                    now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
+                    print("未勾选商品，请勾选，按回车键接续 时间：%s" % now)
+                    input()
+                else:
+                    while True:
+                        # 确认是否抢购
+                            sum = browser.find_element(by=By.CLASS_NAME, value="amount-sum")
+                            print(sum.text, "确定请输入“1”，继续勾选请输入“0” 时间：%s" % now)
+                            a = input()
+                            if a == "1":
+                                break
+                            else:
+                                print("请勾选商品，按回车键接续 时间：%s" % now)
+                                input()
+                    break
+
+def buy(times):
+    while True:
+        now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
+        # 对比时间，时间到的话就点击结算
+        print(now)
+        if now >= times:
+            # 点击结算按钮
+            while True:
+                try:
+                    if browser.find_element(by=By.LINK_TEXT, value="去结算"):
+                        browser.find_element(by=By.LINK_TEXT, value="去结算").click()
+                except:
+                    now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
+                    print("======结算成功 时间：%s" % now)
+                    break
+            # 点击提交订单按钮
+            while True:
+                try:
+                    if browser.find_element(by=By.ID, value="order-submit"):
+                        browser.find_element(by=By.ID, value="order-submit").click()
+                except:
+                    now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
+                    print("======提交订单成功，请手动输入密码支付 时间：%s" % now)
+                    break
+
+#  定位元素方式三种任何一个都可以使用过，实际使用自由组合。
+# （1）id定位 driver.find_element(by=By.ID,"id")
+# （2）name定位 driver.find_element(by=By.NAME,"name")
+# （3）class定位 driver.find_element(by=By.Class_NAME,"class_name")
+
+# 抢购主函数
+if __name__ == "__main__":
+    times = input("请输入抢购时间，格式如(2022-06-18 20:00:00.000000):")
+    browser = webdriver.Chrome()
+    browser.maximize_window()
+    login()
+    method = int(input("自动勾选购物车请输入“1”，否则输入“0”："))
+    picking(method)
+    buy(times)
