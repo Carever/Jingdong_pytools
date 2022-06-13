@@ -10,70 +10,90 @@ def login():
     if browser.find_element(by=By.LINK_TEXT, value="你好，请登录"):
         browser.find_element(by=By.LINK_TEXT, value="你好，请登录").click()
         now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
-        print("======请登录 时间：%s" % now)
+        print("======请登录，请不要手动跳转到其他界面 时间：%s" % now)
         time.sleep(2)
     # 检查是否登录成功
     while True:
         try:
             if browser.find_element(by=By.LINK_TEXT, value="登录页面，调查问卷"):
                 now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
-                print("======请登录 时间：%s" % now)
+                print("======请登录，请不要手动跳转到其他界面 时间：%s" % now)
                 time.sleep(1)
         except:
             now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
-            print("======登录成功 时间：%s" % now)
+            print("======登录成功，请不要手动跳转到其他界面 时间：%s" % now)
             time.sleep(1)
             # 打开购物车界面
             browser.get("https://cart.jd.com")
-            time.sleep(2)
+            time.sleep(1)
             break
 
 def picking(method):
     # 全选购物车
     if method == 1:
-        while True:
-            try:
-                if browser.find_element(by=By.NAME, value="select-all"):
-                    browser.find_element(by=By.NAME, value="select-all").click()
+        if browser.find_element(by=By.NAME, value="select-all"):
+            browser.find_element(by=By.NAME, value="select-all").click()
+        time.sleep(1)
+        sum = browser.find_element(by=By.CLASS_NAME, value="amount-sum")
+        if sum.text == "已选择0件商品":
+            if browser.find_element(by=By.NAME, value="select-all"):
+                browser.find_element(by=By.NAME, value="select-all").click()
+            now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
+            print("======全选成功",sum.text," 时间：%s" % now)
+        else:
+            now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
+            sum = browser.find_element(by=By.CLASS_NAME, value="amount-sum")
+            print("======全选成功",sum.text," 时间：%s" % now)
+            print("按回车键继续")
+            input()
+            while True:
+                sum = browser.find_element(by=By.CLASS_NAME, value="amount-sum")
+                if sum.text == "已选择0件商品":
                     now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
-                    print("======全选成功 时间：%s" % now)
+                    print("======未勾选商品，请勾选 时间：%s" % now)
+                    print("按回车键继续")
+                    input()
+                else:
                     while True:
                         # 确认是否抢购
-                            sum = browser.find_element(by=By.CLASS_NAME, value="amount-sum")
-                            print(sum.text, "确定请输入“1”，继续勾选请输入“0” 时间：%s" % now)
-                            a = input()
-                            if a == 1:
-                                break
-                            else:
-                                print("请勾选商品，按回车键接续 时间：%s" % now)
-                                input()
+                        sum = browser.find_element(by=By.CLASS_NAME, value="amount-sum")
+                        print("======",sum.text, " 时间：%s" % now)
+                        print("开始抢购请输入“1”，继续勾选请输入“0”")
+                        a = input()
+                        if a == "1":
+                            break
+                        else:
+                            print("请勾选商品 时间：%s" % now)
+                            print("按回车键继续")
+                            input()
                     break
-            except:
-                now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
-                print("======找不到购买按钮 时间：%s" % now)
 
     # 手动选择商品
     if method == 0:
         now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
-        print("请勾选商品，按回车键继续 时间：%s" % now)
+        print("======请勾选商品 时间：%s" % now)
+        print("按回车键继续")
         input()
         # 检查是否已经勾选
         while True:
                 sum = browser.find_element(by=By.CLASS_NAME, value="amount-sum")
                 if sum.text == "已选择0件商品":
                     now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
-                    print("未勾选商品，请勾选，按回车键接续 时间：%s" % now)
+                    print("======未勾选商品，请勾选 时间：%s" % now)
+                    print("按回车键继续")
                     input()
                 else:
                     while True:
                         # 确认是否抢购
                             sum = browser.find_element(by=By.CLASS_NAME, value="amount-sum")
-                            print(sum.text, "确定请输入“1”，继续勾选请输入“0” 时间：%s" % now)
+                            print("======",sum.text, " 时间：%s" % now)
+                            print("开始抢购请输入“1”，继续勾选请输入“0”")
                             a = input()
                             if a == "1":
                                 break
                             else:
-                                print("请勾选商品，按回车键接续 时间：%s" % now)
+                                print("请勾选商品 时间：%s" % now)
+                                print("按回车键继续")
                                 input()
                     break
 
@@ -109,9 +129,9 @@ def buy(times):
 
 # 抢购主函数
 if __name__ == "__main__":
-    times = input("请输入抢购时间，格式如(2022-06-18 20:00:00.000000):")
+    times = input("请输入抢购时间，格式如(2022-06-15 20:00:00.000000):")
     browser = webdriver.Chrome()
-    browser.maximize_window()
+    browser.set_window_size(1024,768)
     login()
     method = int(input("自动勾选购物车请输入“1”，否则输入“0”："))
     picking(method)
