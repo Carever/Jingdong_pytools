@@ -4,25 +4,18 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 
 def login():
-    # 打开京东登录页，并进行扫码登录
-    browser.get("https://www.jd.com")
-    time.sleep(1)
-    if browser.find_element(by=By.LINK_TEXT, value="你好，请登录"):
-        browser.find_element(by=By.LINK_TEXT, value="你好，请登录").click()
-        now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
-        print("======请登录，请不要手动跳转到其他界面 时间：%s" % now)
-        time.sleep(2)
+    # 打开京东登录页，并进行登录
+    browser.get("https://passport.jd.com/new/login.aspx")
     # 检查是否登录成功
     while True:
         try:
             if browser.find_element(by=By.LINK_TEXT, value="登录页面，调查问卷"):
                 now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
                 print("======请登录，请不要手动跳转到其他界面 时间：%s" % now)
-                time.sleep(1)
+                time.sleep(1) 
         except:
             now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
             print("======登录成功，请不要手动跳转到其他界面 时间：%s" % now)
-            time.sleep(1)
             # 打开购物车界面
             browser.get("https://cart.jd.com")
             time.sleep(1)
@@ -39,13 +32,11 @@ def picking(method):
             if browser.find_element(by=By.NAME, value="select-all"):
                 browser.find_element(by=By.NAME, value="select-all").click()
             now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
-            print("======全选成功",sum.text," 时间：%s" % now)
+            print("======全选成功",sum.text,"时间：%s" % now)
         else:
             now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
             sum = browser.find_element(by=By.CLASS_NAME, value="amount-sum")
-            print("======全选成功",sum.text," 时间：%s" % now)
-            print("按回车键继续")
-            input()
+            print("======全选成功"," 时间：%s" % now)
             while True:
                 sum = browser.find_element(by=By.CLASS_NAME, value="amount-sum")
                 if sum.text == "已选择0件商品":
@@ -57,7 +48,7 @@ def picking(method):
                     while True:
                         # 确认是否抢购
                         sum = browser.find_element(by=By.CLASS_NAME, value="amount-sum")
-                        print("======",sum.text, " 时间：%s" % now)
+                        print("======",sum.text,"时间：%s" % now)
                         print("开始抢购请输入“1”，继续勾选请输入“0”")
                         a = input()
                         if a == "1":
@@ -86,7 +77,7 @@ def picking(method):
                     while True:
                         # 确认是否抢购
                             sum = browser.find_element(by=By.CLASS_NAME, value="amount-sum")
-                            print("======",sum.text, " 时间：%s" % now)
+                            print("======",sum.text,"时间：%s" % now)
                             print("开始抢购请输入“1”，继续勾选请输入“0”")
                             a = input()
                             if a == "1":
@@ -97,7 +88,7 @@ def picking(method):
                                 input()
                     break
 
-def buy(times):
+def buy(times,speed):
     while True:
         now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
         # 对比时间，时间到的话就点击结算
@@ -121,6 +112,8 @@ def buy(times):
                     now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
                     print("======提交订单成功，请手动输入密码支付 时间：%s" % now)
                     break
+        else:
+            time.sleep(speed)
 
 #  定位元素方式三种任何一个都可以使用过，实际使用自由组合。
 # （1）id定位 driver.find_element(by=By.ID,"id")
@@ -130,9 +123,10 @@ def buy(times):
 # 抢购主函数
 if __name__ == "__main__":
     times = input("请输入抢购时间，格式如(2022-06-15 20:00:00.000000):")
+    speed = int(input("请输入延迟时间，单位毫秒，只需输入数字:"))/1000
     browser = webdriver.Chrome()
     browser.set_window_size(1024,768)
     login()
-    method = int(input("自动勾选购物车请输入“1”，否则输入“0”："))
+    method = int(input("全选购物车请输入“1”，否则输入“0”："))
     picking(method)
-    buy(times)
+    buy(times,speed)
