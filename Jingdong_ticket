@@ -1,0 +1,32 @@
+import time
+import datetime
+import requests
+from threading import Thread
+
+
+url = '填写券的api'
+headers = {
+    'User-Agent': '填写你的user-agent',
+    'Cookie': '填写你的cookies'
+}
+
+def post_cookies(times, speed):
+    while True:
+        now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
+        print(now)
+        if now >= times:
+            while True:
+                r = requests.get(url, headers=headers)
+                print(r.text)
+                if r.text.__contains__("抢完") or r.text.__contains__("失败"):
+                    continue
+                else:
+                    break
+            break
+        else:
+            time.sleep(speed)
+
+if __name__ == "__main__":
+    times = input("请输入抢购时间，格式如(2022-06-15 20:00:00.000000):")
+    speed = int(input("请输入延迟时间，单位毫秒，只需输入数字:")) / 1000
+    post_cookies(times,speed)
