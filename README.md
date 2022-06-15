@@ -17,3 +17,7 @@ pip install datetime
 pip install requests
 
 pip install datetime
+
+抢券目前单线程，后续开发多线程
+
+59-20的券api：https://api.m.jd.com/client.action?functionId=newBabelAwardCollection&body={%22activityId%22:%22csTQSAnfQypSN7KeyCwJWthE6aV%22,%22from%22:%22H5node%22,%22scene%22:%221%22,%22args%22:%22key=m1a5teeereibadl8c9m9s812171a4448,roleId=76866119%22}&client=wh5
