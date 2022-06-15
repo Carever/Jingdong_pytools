@@ -130,4 +130,3 @@ if __name__ == "__main__":
     method = int(input("全选购物车请输入“1”，否则输入“0”："))
     picking(method)
     buy(times,speed)
- 
