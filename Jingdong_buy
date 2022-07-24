@@ -12,7 +12,7 @@ def login():
             if browser.find_element(by=By.LINK_TEXT, value="登录页面，调查问卷"):
                 now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
                 print("======请登录，请不要手动跳转到其他界面 时间：%s" % now)
-                time.sleep(1) 
+                time.sleep(1)
         except:
             now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
             print("======登录成功，请不要手动跳转到其他界面 时间：%s" % now)
@@ -112,6 +112,7 @@ def buy(times,speed):
                     now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
                     print("======提交订单成功，请手动输入密码支付 时间：%s" % now)
                     break
+            break
         else:
             time.sleep(speed)
 
@@ -124,6 +125,7 @@ def buy(times,speed):
 if __name__ == "__main__":
     times = input("请输入抢购时间，格式如(2022-06-15 20:00:00.000000):")
     speed = int(input("请输入延迟时间，单位毫秒，只需输入数字:"))/1000
+    location = input("请手动设置默收货地址，按回车继续")
     browser = webdriver.Chrome()
     browser.set_window_size(1024,768)
     login()
